@@ -5,8 +5,67 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webpack App</title>
-<script defer src="bundlec6760d5efcbb253f9c89.js"></script></head>
+<script defer src="bundle60d3b6f7304a81f9bfb5.js"></script></head>
 <body>
-    <h1>Hello</h1>
+    <div class="wrapper">
+        <header class="header">
+            <div class="logo">
+                <h1>remindNotes</h1>
+            </div>
+            <button type="button" class="bttn">New Project+</button>
+        </header>
+        <main class="main-content">
+            <div class="form-container">
+                <form action="#" class="form">
+                    <div>
+                        <span>Title</span>
+                        <div class="form-input">
+                            <input type="text" id="title" name="title" placeholder="Title" required>
+                        </div>
+                    </div>
+                    <div>
+                        <span>Description</span>
+                        <div class="form-input">
+                            <input type="text" id="description" name="description" placeholder="Details" required>
+                        </div>
+                    </div>
+                    <div>
+                        <span>Due Date</span>
+                        <div class="form-input">
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                    </div>
+                    <fieldset>
+                        <span>Priority</span>
+                        <div class="form-input">
+                            <div class="checkbox-container">
+                                <span>Low</span>
+                                <input type="radio" id="low-radio" name="priority" value="Low" checked>
+                                <span>Medium</span>
+                                <input type="radio" id="medium-radio" name="priority" value="Medium" >
+                                <span>High</span>
+                                <input type="radio" id="high-radio" name="priority" value="High" >
+                            </div>
+                        </div>
+                    </fieldset>
+                    <button type="button" class="form-bttn">Add</button>
+                </form>
+            </div>
+            <div class="todo-content">
+                <div class="todo-tabs">                
+                    <div class="tabs">
+                        <span>To Do</span>
+                    </div>
+                </div>
+                <div class="todo-container-list">
+                
+                </div>
+            </div>
+        </main>
+        <footer class="footer">
+            <div>Copyright ebr93</div>
+        </footer>
+    </div>
+
 </body>
 </html>
