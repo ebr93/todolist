@@ -194,7 +194,7 @@ const addProjectTab = () => {
     modal.style.display = "none";
 }
 
-// function used for evenListener
+// all buttons and clickable items will refer to this function to work appropriately
 const buttonClicker = (target) => {
     const title = document.querySelector("#title");
     const description = document.querySelector("#description");
@@ -222,6 +222,8 @@ const buttonClicker = (target) => {
             return
         }
         addProjectTab();
+        toDoContainer.clear();
+        toDoContainer.printArray();
         //modifies animations of modal
     } else if (target.id == 'open-modal') {
         modal.style.display = "block";

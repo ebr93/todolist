@@ -17881,7 +17881,8 @@ var toDoArray = function () {
 
   var addToDo = function addToDo(object) {
     container.push(object);
-  };
+  }; // returns the project value that is currently being seen on the screen
+
 
   var projectValue = function projectValue() {
     console.log("project value length is ".concat(projectObj.projectArray.length, " and current value is ").concat(projectObj.returnCurrent()));
@@ -17892,12 +17893,14 @@ var toDoArray = function () {
         return i;
       }
     }
-  };
+  }; // adds new toDo object to Array
+
 
   var add = function add() {
     var newToDo = toDoObject(title.value, description.value, date.value, document.querySelector('input[name="priority"]:checked').value, projectObj.projectArray[projectValue()]);
     addToDo(newToDo);
-  };
+  }; // removes toDo object from Array
+
 
   var removeObj = function removeObj(obj) {
     var parent = obj.parentElement;
@@ -17915,18 +17918,19 @@ var toDoArray = function () {
     add: add,
     removeObj: removeObj
   };
-}(); // object to input project tabs
+}(); // project object to create and manipulate for efficiency
 
 
 var projectObj = function () {
   var firstValue = document.querySelector('#first-value').textContent;
   var projectArray = ["".concat(firstValue)];
   var arrayIndex = 0;
-  var current = 0;
+  var current = 0; // necessary, because if current is called outside projectObj then (current = 0) always
 
   var returnCurrent = function returnCurrent() {
     return current;
-  };
+  }; // if new tab then it will be added to projectArray, otherwise it just becomes the current tab
+
 
   var newP = function newP(string) {
     if (!projectArray.includes(string)) {
@@ -17946,37 +17950,39 @@ var projectObj = function () {
         }
       }
     }
-  };
+  }; // removed (current)
+
 
   return {
     projectArray: projectArray,
     arrayIndex: arrayIndex,
-    current: current,
     returnCurrent: returnCurrent,
     newP: newP
   };
-}(); // modifies DOM by using toDo object
+}(); // modifies DOM by inputting toDo objects
 
 
 var toDoContainer = function () {
   var containerList = document.querySelector('.todo-container-list');
   var title = document.querySelector("#title");
   var description = document.querySelector("#description");
-  var date = document.querySelector("#date"); // priority keeps the value of low, so started using querySelector instead
+  var date = document.querySelector("#date"); // priority keeps the value of low, so started using querySelector instead (document.querySelector('input[name="priority"]:checked'))
   //let priority = document.querySelector('input[name="priority"]:checked').value;
+  // clears form
 
   var clearForm = function clearForm() {
     title.value = '';
     description.value = '';
     date.value = '';
     document.querySelector('input[name="priority"]:checked').checked = false;
-  };
+  }; // prints all toDo objects
+
 
   var printArray = function printArray() {
     toDoArray.container.forEach(function (object) {
       print(object);
     });
-  }; // prints toDo objects on DOM by using toDo obj entered(by printArray)
+  }; // prints only the objects for the current project tab
 
 
   var print = function print(obj) {
@@ -17985,8 +17991,9 @@ var toDoContainer = function () {
     if (obj.project === projectObj.projectArray[projectObj.returnCurrent()]) {
       var _toDoContainer = document.createElement('div');
 
-      _toDoContainer.classList.add('printObj'); //toDoContainer.setAttribute('id', `${obj.title}`);
+      _toDoContainer.classList.add('printObj');
 
+      _toDoContainer.setAttribute('id', "".concat(obj.title));
 
       var checkBox = document.createElement('input');
       checkBox.classList.add('checkStatus');
@@ -18003,13 +18010,14 @@ var toDoContainer = function () {
 
       console.log('done printing');
     }
-  }; // KEEP AN EYE ON THIS
+  }; // removes container from DOM
 
 
   var removeDiv = function removeDiv(obj) {
     var parent = obj.parentElement;
     containerList.removeChild(parent);
-  };
+  }; // clears all of toDoContainer
+
 
   function clear() {
     while (containerList.firstChild) {
@@ -18092,15 +18100,6 @@ var buttonClicker = function buttonClicker(target) {
     }
   }
 };
-/*
-function clearAll() {
-    const containerList = document.querySelector('.todo-container-list');
-    while (containerList.firstChild) {
-        containerList.removeChild(containerList.firstChild);
-    }
-}
-*/
-
 
 document.addEventListener('click', function (event) {
   var target = event.target;
@@ -18110,4 +18109,4 @@ document.addEventListener('click', function (event) {
 
 /******/ })()
 ;
-//# sourceMappingURL=bundled32de2fc5ba7497fc420.js.map
+//# sourceMappingURL=bundle4183c178d562ebcd8a3b.js.map
