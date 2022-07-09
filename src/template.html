@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body>
+    <div class="wrapper">
+        <header class="header">
+            <div class="logo">
+                <h1>remindNotes</h1>
+            </div>
+        </header>
+        <main class="main-content">
+            <div class="form-container">
+                <form action="#" class="form">
+                    <div>
+                        <span>Title</span>
+                        <div class="form-input">
+                            <input type="text" id="title" name="title" placeholder="Title" required>
+                        </div>
+                    </div>
+                    <div>
+                        <span>Description</span>
+                        <div class="form-input">
+                            <input type="text" id="description" name="description" placeholder="Details" required>
+                        </div>
+                    </div>
+                    <div>
+                        <span>Due Date</span>
+                        <div class="form-input">
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                    </div>
+                    <fieldset>
+                        <span>Priority</span>
+                        <div class="form-input">
+                            <div class="checkbox-container">
+                                <span>Low</span>
+                                <input type="radio" id="low-radio" name="priority" value="Low" checked>
+                                <span>Medium</span>
+                                <input type="radio" id="medium-radio" name="priority" value="Medium" >
+                                <span>High</span>
+                                <input type="radio" id="high-radio" name="priority" value="High" >
+                            </div>
+                        </div>
+                    </fieldset>
+                    <button type="button" class="form-bttn">Add</button>
+                </form>
+            </div>
+            <div class="todo-content">
+                <div class="todo-tabs">                
+                    <div class="tabs" id="first-value">
+                        <span>To Do</span>
+                    </div>
+                    <!-- open modal button -->
+                    <button type="button" class="bttn" id="open-modal">Project+</button>
+                </div>
+                <div class="todo-container-list">
+                
+                </div>
+            </div>
+        </main>
+        <footer class="footer">
+            <div>Copyright ebr93</div>
+        </footer>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div><span class="close">&times;</span></div>
+                <form action="#" class="form-modal">
+                    <div>
+                        <span>New Project Name</span>
+                        <div class="form-input">
+                            <input type="text" id="project" name="project" placeholder="Project Name" required>
+                        </div>
+                    </div>
+                    <button type="button" class="modal-form-bttn">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
