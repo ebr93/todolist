@@ -105,7 +105,7 @@ img {
 .form {
   height: 500px;
   width: 300px;
-  font-size: calc(1.425rem + 0.3vw);
+  font-size: calc(1.425rem + 0.1vw);
   display: flex;
   flex-direction: column;
   justify-content: space-around;

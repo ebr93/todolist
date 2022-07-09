@@ -61,10 +61,11 @@ const toDoArray = (() => {
     }
 })();
 
-// project object to create and manipulate for efficiency
+// project functionality to create and manipulate for efficiency
 const projectObj = (() => {
     const firstValue = document.querySelector('#first-value').textContent;
 
+    // array needed to maintain new projects
     const projectArray = [`${firstValue}`];
 
     let arrayIndex = 0;
