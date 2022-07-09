@@ -5,14 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webpack App</title>
-<script defer src="bundle60d3b6f7304a81f9bfb5.js"></script></head>
+<script defer src="bundled32de2fc5ba7497fc420.js"></script></head>
 <body>
     <div class="wrapper">
         <header class="header">
             <div class="logo">
                 <h1>remindNotes</h1>
             </div>
-            <button type="button" class="bttn">New Project+</button>
         </header>
         <main class="main-content">
             <div class="form-container">
@@ -53,9 +52,11 @@
             </div>
             <div class="todo-content">
                 <div class="todo-tabs">                
-                    <div class="tabs">
+                    <div class="tabs" id="first-value">
                         <span>To Do</span>
                     </div>
+                    <!-- open modal button -->
+                    <button type="button" class="bttn" id="open-modal">Project+</button>
                 </div>
                 <div class="todo-container-list">
                 
@@ -65,6 +66,22 @@
         <footer class="footer">
             <div>Copyright ebr93</div>
         </footer>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div><span class="close">&times;</span></div>
+                <form action="#" class="form-modal">
+                    <div>
+                        <span>New Project Name</span>
+                        <div class="form-input">
+                            <input type="text" id="project" name="project" placeholder="Project Name" required>
+                        </div>
+                    </div>
+                    <button type="button" class="modal-form-bttn">Add</button>
+                </form>
+            </div>
+        </div>
     </div>
 
 </body>
