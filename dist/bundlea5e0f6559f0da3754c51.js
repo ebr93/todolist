@@ -17899,6 +17899,8 @@ var toDoArray = function () {
   var add = function add() {
     var newToDo = toDoObject(title.value, description.value, date.value, document.querySelector('input[name="priority"]:checked').value, projectObj.projectArray[projectValue()]);
     addToDo(newToDo);
+    localStorageMod.removeToDo();
+    localStorageMod.setToDo(container);
   }; // removes toDo object from Array
 
 
@@ -17909,6 +17911,8 @@ var toDoArray = function () {
     for (var i = 0; i < container.length; i++) {
       if (parent.id == container[i].title) {
         container.splice(i, 1);
+        localStorageMod.removeToDo();
+        localStorageMod.getToDo(container);
       }
     }
   };
@@ -17918,31 +17922,83 @@ var toDoArray = function () {
     add: add,
     removeObj: removeObj
   };
+}(); // modifies localStorage
+
+
+var localStorageMod = function () {
+  var setToDo = function setToDo(array) {
+    localStorage.setItem("savedToDoData", JSON.stringify(array));
+  };
+
+  var setProject = function setProject(array) {
+    localStorage.setItem("savedProjectData", JSON.stringify(array));
+  };
+
+  var getToDo = function getToDo() {
+    var toDo = JSON.parse(localStorage.getItem("savedToDoData"));
+
+    if (toDo.isEmpty() === null) {
+      return;
+    }
+
+    toDoArray.container = toDo;
+  };
+
+  var getProject = function getProject() {
+    var project = JSON.parse(localStorage.getItem("savedProjectData"));
+
+    if (project.isEmpty() === null) {
+      return;
+    }
+
+    projectObj.projectArray = project;
+  };
+
+  var removeToDo = function removeToDo() {
+    localStorage.removeItem("savedToDoData");
+  };
+
+  var removeProject = function removeProject() {
+    localStorage.removeItem("savedProjectData");
+  };
+
+  return {
+    setToDo: setToDo,
+    setProject: setProject,
+    getToDo: getToDo,
+    getProject: getProject,
+    removeToDo: removeToDo,
+    removeProject: removeProject
+  };
 }(); // project functionality to create and manipulate for efficiency
 
 
 var projectObj = function () {
-  var firstValue = document.querySelector('#first-value').textContent; // array needed to maintain new projects
-
-  var projectArray = ["".concat(firstValue)];
+  // array needed to maintain new projects
+  var projectArray = ['To Do'];
   var arrayIndex = 0;
-  var current = 0; // necessary, because if current is called outside projectObj then (current = 0) always
+  var current = 0; // returns current
 
   var returnCurrent = function returnCurrent() {
     return current;
-  }; // if new tab then it will be added to projectArray, otherwise it just becomes the current tab
+  }; // adds to array of projects or updates current project
 
 
-  var newP = function newP(string) {
+  var newProject = function newProject(string) {
     if (!projectArray.includes(string)) {
       console.log(current);
       projectArray.push(string);
       arrayIndex++;
       current = arrayIndex;
+      localStorageMod.removeProject();
+      localStorageMod.setProject(projectArray);
       console.log(current);
       console.log(projectArray);
-      return;
-    } else if (projectArray.includes("".concat(string))) {
+    }
+  };
+
+  var currentProject = function currentProject() {
+    if (projectArray.includes(string)) {
       for (var i = 0; i < projectArray.length; i++) {
         if (projectArray[i] == string) {
           current = i;
@@ -17951,14 +18007,14 @@ var projectObj = function () {
         }
       }
     }
-  }; // removed (current)
-
+  };
 
   return {
     projectArray: projectArray,
     arrayIndex: arrayIndex,
     returnCurrent: returnCurrent,
-    newP: newP
+    newProject: newProject,
+    currentProject: currentProject
   };
 }(); // modifies DOM by inputting toDo objects
 
@@ -18037,16 +18093,15 @@ var toDoContainer = function () {
 }(); // modifies modal, DOM and prints new tab objects (function used in buttonClicker)
 
 
-var addProjectTab = function addProjectTab() {
-  var newProject = document.querySelector('#project').value;
+var addProjectTab = function addProjectTab(tabName) {
   var tabsContainer = document.querySelector('.todo-tabs');
   var openModal = document.querySelector('#open-modal');
   var modal = document.getElementById("myModal");
   var newDiv = document.createElement('div');
   newDiv.classList.add('tabs');
   var newSpan = document.createElement('span');
-  newSpan.innerText = "".concat(newProject);
-  projectObj.newP("".concat(newProject));
+  newSpan.innerText = "".concat(tabName); // projectObj.newP(`${newProject}`);
+
   tabsContainer.insertBefore(newDiv, openModal);
   newDiv.appendChild(newSpan);
   modal.style.display = "none";
@@ -18070,26 +18125,27 @@ var buttonClicker = function buttonClicker(target) {
     toDoArray.add();
     toDoContainer.clearForm();
     toDoContainer.clear();
-    toDoContainer.printArray();
+    toDoContainer.printArray(); // adds new tab
   } else if (target.classList == 'modal-form-bttn') {
-    if (newProject == '') {
+    if (newProject == '' || projectObj.projectArray.includes("".concat(newProject))) {
       return;
     }
 
-    addProjectTab();
+    projectObj.newProject("".concat(newProject));
+    addProjectTab(newProject);
     toDoContainer.clear();
-    toDoContainer.printArray(); //modifies animations of modal
+    toDoContainer.printArray(); // modifies animations of modal
   } else if (target.id == 'open-modal') {
     modal.style.display = "block";
   } else if (target.classList == 'close') {
     modal.style.display = "none";
   } else if (target == modal) {
-    modal.style.display = "none";
+    modal.style.display = "none"; // updates current tab
   } else if (target.classList == 'tabs') {
     console.log(target.textContent);
-    projectObj.newP("".concat(target.textContent));
+    projectObj.currentProject("".concat(target.textContent));
     toDoContainer.clear();
-    toDoContainer.printArray();
+    toDoContainer.printArray(); // deletes obj if checked
   } else if (target.classList == 'checkStatus') {
     console.log(target.checked);
     var nextSibling = target.nextElementSibling;
@@ -18108,8 +18164,17 @@ document.addEventListener('click', function (event) {
   var target = event.target;
   buttonClicker(target);
 });
+window.addEventListener('load', function (event) {
+  console.log('page is fully loaded');
+  localStorageMod.getToDo();
+  localStorageMod.getProject();
+  projectObj.projectArray.forEach(function (project) {
+    addProjectTab(project);
+  });
+  toDoContainer.printArray();
+});
 })();
 
 /******/ })()
 ;
-//# sourceMappingURL=bundle3085c184b84362428d57.js.map
+//# sourceMappingURL=bundlea5e0f6559f0da3754c51.js.map

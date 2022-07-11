@@ -40,6 +40,9 @@ const toDoArray = (() => {
         const newToDo = toDoObject(title.value, description.value, date.value, 
             document.querySelector('input[name="priority"]:checked').value, projectObj.projectArray[projectValue()]);
         addToDo(newToDo);
+        localStorageMod.removeToDo();
+        localStorageMod.setToDo(container);
+        console.log(container);
     }
 
     // removes toDo object from Array
@@ -49,6 +52,8 @@ const toDoArray = (() => {
         for (let i = 0; i < container.length; i++) {
             if (parent.id == container[i].title) {
                 container.splice(i, 1);
+                localStorageMod.removeToDo();
+                localStorageMod.setToDo(container);
             }
         }
     }
@@ -57,54 +62,111 @@ const toDoArray = (() => {
     return {
         container,
         add,
+        addToDo,
         removeObj,
+    }
+})();
+
+// modifies localStorage
+const localStorageMod = (() => {
+    const setToDo = (array) => {
+        localStorage.setItem("savedToDoData", JSON.stringify(array));
+    }
+
+    const setProject = (array) => {
+        localStorage.setItem("savedProjectData", JSON.stringify(array));
+    }
+
+    const getToDo = () => {
+        const toDo = JSON.parse(localStorage.getItem("savedToDoData"));
+        console.log(toDo);
+        if (toDo === null) {
+            return
+        }
+
+        toDo.forEach(obj => toDoArray.addToDo(obj));
+    }
+
+    const getProject = () => {
+        const project = JSON.parse(localStorage.getItem("savedProjectData"));
+        console.log(project);
+        if (project === null) {
+            return
+        }
+        
+        project.forEach(obj => projectObj.newProject(obj))
+    }
+    
+
+    const removeToDo = () => {
+        localStorage.removeItem("savedToDoData");
+    }
+
+    const removeProject = () => {
+        localStorage.removeItem("savedProjectData");
+    }
+
+    return {
+        setToDo,
+        setProject,
+        getToDo,
+        getProject,
+        removeToDo,
+        removeProject,
     }
 })();
 
 // project functionality to create and manipulate for efficiency
 const projectObj = (() => {
-    const firstValue = document.querySelector('#first-value').textContent;
-
     // array needed to maintain new projects
-    const projectArray = [`${firstValue}`];
+    const projectArray = ['To Do'];
 
     let arrayIndex = 0;
 
     let current = 0;
 
-    // necessary, because if current is called outside projectObj then (current = 0) always
+    // returns current
     const returnCurrent = () => {
         return current;
     }
 
-    // if new tab then it will be added to projectArray, otherwise it just becomes the current tab
-    const newP = (string) => {
+    // adds to array of projects or updates current project
+    const newProject = (string) => {
         if (!(projectArray.includes(string))) {
             console.log(current);
+
             projectArray.push(string);
             arrayIndex++;
             current = arrayIndex;
-            console.log(current);
-            console.log(projectArray);
-            return;
+            localStorageMod.removeProject();
+            localStorageMod.setProject(projectArray);
+            console.log(current + 'newProject');
+            console.log(projectArray + 'newProject');
+            
+        } 
+    }
 
-        } else if (projectArray.includes(`${string}`)) {
+    const currentProject = (string) => {
+        if (projectArray.includes(string)) {
             for (let i = 0; i < projectArray.length; i++) {
                 if (projectArray[i] == string) {
                     current = i;
-                    console.log(current);
+                    console.log(current + 'current Project');
+                    console.log(projectArray + 'current Project');
                     return; 
+                    
                 }
             }
         }
     }
 
-    // removed (current)
+
     return {
         projectArray,
         arrayIndex,
         returnCurrent,
-        newP,
+        newProject,
+        currentProject,
     }
 })();
 
@@ -179,8 +241,7 @@ const toDoContainer = (() => {
 })();
 
 // modifies modal, DOM and prints new tab objects (function used in buttonClicker)
-const addProjectTab = () => {
-    const newProject = document.querySelector('#project').value;
+const addProjectTab = (tabName) => {
     const tabsContainer = document.querySelector('.todo-tabs');
     const openModal = document.querySelector('#open-modal');
     const modal = document.getElementById("myModal");
@@ -188,12 +249,13 @@ const addProjectTab = () => {
     const newDiv = document.createElement('div');
     newDiv.classList.add('tabs');
     const newSpan = document.createElement('span');
-    newSpan.innerText = `${newProject}`
-    projectObj.newP(`${newProject}`);
+    newSpan.innerText = `${tabName}`
+    // projectObj.newP(`${newProject}`);
+
     tabsContainer.insertBefore(newDiv, openModal);
     newDiv.appendChild(newSpan); 
     modal.style.display = "none";
-}
+};
 
 // all buttons and clickable items will refer to this function to work appropriately
 const buttonClicker = (target) => {
@@ -218,25 +280,32 @@ const buttonClicker = (target) => {
         toDoContainer.clearForm();
         toDoContainer.clear();
         toDoContainer.printArray();
+    
+    // adds new tab
     } else if (target.classList == 'modal-form-bttn') {
-        if (newProject == '') {
+        if (newProject == '' || projectObj.projectArray.includes(`${newProject}`)) {
             return
         }
-        addProjectTab();
+
+        projectObj.newProject(`${newProject}`);
+        addProjectTab(newProject);
         toDoContainer.clear();
         toDoContainer.printArray();
-        //modifies animations of modal
+    
+    // modifies animations of modal
     } else if (target.id == 'open-modal') {
         modal.style.display = "block";
     } else if (target.classList == 'close') {
         modal.style.display = "none";
     } else if (target == modal) {
         modal.style.display = "none";
+    // updates current tab
     } else if (target.classList == 'tabs') {
         console.log(target.textContent);
-        projectObj.newP(`${target.textContent}`);
+        projectObj.currentProject(`${target.textContent}`);
         toDoContainer.clear();
         toDoContainer.printArray();
+    // deletes obj if checked
     } else if (target.classList == 'checkStatus') {
         console.log(target.checked);
         let nextSibling = target.nextElementSibling;
@@ -253,4 +322,14 @@ const buttonClicker = (target) => {
 document.addEventListener('click', (event) => {
     const { target } = event;
     buttonClicker(target);
+});
+
+window.addEventListener('load', (event) => {
+    console.log('page is fully loaded');
+    localStorageMod.getToDo();
+    localStorageMod.getProject();
+    projectObj.projectArray.forEach((project) => {
+        addProjectTab(project);
+    });
+    toDoContainer.printArray();
 });
