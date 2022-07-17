@@ -225,7 +225,7 @@ const toDoContainer = (() => {
     }
 
     // clears all of toDoContainer
-    function clear() {
+    function clear () {
         while (containerList.firstChild) {
             containerList.removeChild(containerList.firstChild);
         }
@@ -331,5 +331,6 @@ window.addEventListener('load', (event) => {
     projectObj.projectArray.forEach((project) => {
         addProjectTab(project);
     });
+    projectObj.currentProject(`${projectObj.projectArray[0]}`);
     toDoContainer.printArray();
 });
